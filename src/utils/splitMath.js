@@ -51,7 +51,7 @@ function allocate(totalPaise, entries) {
   for (let i = 0; i < leftover; i += 1) order[i].paise += 1
 
   return allocations.map(({ userId, paise }) => ({ userId, amount: fromPaise(paise) }))
-}
+}   
 
 function success(splits) {
   return { valid: true, splits, error: null }
