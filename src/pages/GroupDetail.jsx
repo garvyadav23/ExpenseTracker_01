@@ -3,6 +3,7 @@ import { ArrowLeft, Plus } from 'lucide-react'
 import { Link, useParams } from 'react-router-dom'
 import ExpenseCard from '../components/expense/ExpenseCard.jsx'
 import ExpenseForm from '../components/expense/ExpenseForm.jsx'
+import SettleUpModal from '../components/balance/SettleUpModal.jsx'
 import MemberList from '../components/group/MemberList.jsx'
 import GroupTypeIcon from '../components/group/GroupTypeIcon.jsx'
 import Button from '../components/common/Button.jsx'
@@ -25,6 +26,7 @@ export default function GroupDetail() {
 	const { user } = useAuth()
 	const [expenseToDelete, setExpenseToDelete] = useState(null)
 	const [expenseFormOpen, setExpenseFormOpen] = useState(false)
+	const [settlementDefaults, setSettlementDefaults] = useState(null)
 	const isLoading = groupQuery.isLoading || expensesQuery.isLoading || balancesQuery.isLoading || friendsQuery.isLoading
 	const isError = groupQuery.isError || expensesQuery.isError || balancesQuery.isError || friendsQuery.isError
 
@@ -100,7 +102,7 @@ export default function GroupDetail() {
 				</div>
 				<div className="flex flex-wrap gap-2">
 					<Button onClick={() => setExpenseFormOpen(true)}><Plus aria-hidden="true" size={17} /> Add expense</Button>
-					<Button variant="secondary" onClick={() => { }}>Settle up</Button>
+					<Button variant="secondary" onClick={() => setSettlementDefaults({})}>Settle up</Button>
 				</div>
 			</header>
 
@@ -139,7 +141,23 @@ export default function GroupDetail() {
 										? `${name} owes ${formatCurrency(Math.abs(netBalance))}`
 										: `${name} is settled up`
 								const color = netBalance > 0 ? 'text-emerald-800' : netBalance < 0 ? 'text-rose-700' : 'text-slate-500'
-								return <li key={userId} className={`px-4 py-3 text-sm font-medium ${color}`}>{balanceMessage}</li>
+								return (
+									<li key={userId}>
+										<button
+											type="button"
+											disabled={userId === user?.id || netBalance === 0}
+											onClick={() => setSettlementDefaults({
+												defaultPayerId: netBalance > 0 ? user?.id : userId,
+												defaultReceiverId: netBalance > 0 ? userId : user?.id,
+												defaultAmount: Math.abs(netBalance),
+											})}
+											className={`w-full px-4 py-3 text-left text-sm font-medium hover:bg-slate-50 disabled:cursor-default disabled:hover:bg-white ${color}`}
+											aria-label={`Settle ${balanceMessage}`}
+										>
+											{balanceMessage}
+										</button>
+									</li>
+								)
 							})}
 						</ul>
 						)}
@@ -164,6 +182,9 @@ export default function GroupDetail() {
 			/>
 			{expenseFormOpen && (
 				<ExpenseForm members={members} groupId={group.id} onClose={() => setExpenseFormOpen(false)} />
+			)}
+			{settlementDefaults && (
+				<SettleUpModal members={members} groupId={group.id} {...settlementDefaults} onClose={() => setSettlementDefaults(null)} />
 			)}
 		</div>
 	)

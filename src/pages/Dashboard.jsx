@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { Plus } from 'lucide-react'
+import { Plus, WalletCards } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import BalanceSummary from '../components/balance/BalanceSummary.jsx'
 import FriendBalanceList from '../components/balance/FriendBalanceList.jsx'
+import SettleUpModal from '../components/balance/SettleUpModal.jsx'
 import Button from '../components/common/Button.jsx'
 import EmptyState from '../components/common/EmptyState.jsx'
 import ExpenseForm from '../components/expense/ExpenseForm.jsx'
@@ -14,7 +15,7 @@ export default function Dashboard() {
 	const { data, isLoading, isError, error, refetch } = useBalances()
 	const { user } = useAuth()
 	const navigate = useNavigate()
-	const [selectedFriend, setSelectedFriend] = useState(null)
+	const [settlementDefaults, setSettlementDefaults] = useState(null)
 	const [expenseOpen, setExpenseOpen] = useState(false)
 	const friendsQuery = useFriends()
 	const firstName = user?.name?.trim().split(/\s+/)[0] || 'there'
@@ -30,10 +31,16 @@ export default function Dashboard() {
 					<p className="text-sm font-medium text-slate-500">Your shared expenses</p>
 					<h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900">Hi, {firstName}</h1>
 				</div>
-				<Button onClick={() => setExpenseOpen(true)} disabled={!user}>
-					<Plus aria-hidden="true" size={17} />
-					Add expense
-				</Button>
+				<div className="flex flex-wrap gap-2">
+					<Button variant="secondary" onClick={() => setSettlementDefaults({})} disabled={!user}>
+						<WalletCards aria-hidden="true" size={17} />
+						Settle up
+					</Button>
+					<Button onClick={() => setExpenseOpen(true)} disabled={!user}>
+						<Plus aria-hidden="true" size={17} />
+						Add expense
+					</Button>
+				</div>
 			</header>
 
 			<BalanceSummary overall={data?.overall} loading={isLoading || isError} />
@@ -71,18 +78,25 @@ export default function Dashboard() {
 					</div>
 				) : (
 					<div className="rounded-md border border-slate-200 bg-white">
-						<FriendBalanceList friends={friends} onSettle={setSelectedFriend} />
+						<FriendBalanceList
+							friends={friends}
+							onSettle={(friendBalance) => {
+								const friendId = friendBalance.userId
+								setSettlementDefaults({
+									defaultPayerId: friendBalance.netBalance > 0 ? friendId : user?.id,
+									defaultReceiverId: friendBalance.netBalance > 0 ? user?.id : friendId,
+									defaultAmount: Math.abs(friendBalance.netBalance),
+								})
+							}}
+						/>
 					</div>
-				)}
-
-				{selectedFriend && (
-					<p className="sr-only" role="status">Selected {selectedFriend.user?.name} to settle up.</p>
 				)}
 			</section>
 
-				{expenseOpen && (
-					<ExpenseForm members={expenseMembers} groupId={null} onClose={() => setExpenseOpen(false)} />
-				)}
+			{settlementDefaults && (
+				<SettleUpModal members={expenseMembers} groupId={null} {...settlementDefaults} onClose={() => setSettlementDefaults(null)} />
+			)}
+			{expenseOpen && <ExpenseForm members={expenseMembers} groupId={null} onClose={() => setExpenseOpen(false)} />}
 		</div>
 	)
 }

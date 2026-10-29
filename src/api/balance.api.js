@@ -131,7 +131,7 @@ export async function createSettlement(input) {
 		receivedBy: input.receivedBy,
 		amount: fromPaise(amountPaise),
 		note: input.note ?? '',
-		createdAt: new Date().toISOString(),
+		createdAt: input.date ? new Date(`${input.date}T12:00:00.000Z`).toISOString() : new Date().toISOString(),
 	}
 	mockState.settlements.unshift(settlement)
 	const payer = mockState.users.find(({ id }) => id === settlement.paidBy)
