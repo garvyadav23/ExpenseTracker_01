@@ -7,7 +7,15 @@ import { ToastProvider } from './context/ToastContext.jsx'
 import './index.css'
 import App from './App.jsx'
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 30000,
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+})
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
