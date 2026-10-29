@@ -85,6 +85,7 @@ export async function createExpense(input) {
 		groupId,
 		description: input.description.trim(),
 		amount: fromPaise(totalPaise),
+		date: input.date ?? null,
 		paidBy,
 		splitType,
 		splits: normalizedSplits.map(({ userId, paise }) => ({ userId, owedAmount: fromPaise(paise) })),

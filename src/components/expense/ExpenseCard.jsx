@@ -25,7 +25,9 @@ export default function ExpenseCard({ expense, usersById = {}, onDelete }) {
     <article className="flex items-start justify-between gap-3 rounded-md border border-slate-200 bg-white p-4 sm:p-5">
       <div className="min-w-0 flex-1">
         <h3 className="truncate text-sm font-semibold text-slate-900">{expense.description}</h3>
-        <p className="mt-1 text-xs text-slate-500">{format(new Date(expense.createdAt), 'd MMM yyyy')}</p>
+        <p className="mt-1 text-xs text-slate-500">
+          {format(new Date(expense.date ? `${expense.date}T12:00:00` : expense.createdAt), 'd MMM yyyy')}
+        </p>
         <p className="mt-3 text-sm text-slate-600">
           {payer} paid <span className="font-medium text-slate-800">{formatCurrency(expense.amount)}</span>
         </p>

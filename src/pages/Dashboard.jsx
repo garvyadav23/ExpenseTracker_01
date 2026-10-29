@@ -5,16 +5,23 @@ import BalanceSummary from '../components/balance/BalanceSummary.jsx'
 import FriendBalanceList from '../components/balance/FriendBalanceList.jsx'
 import Button from '../components/common/Button.jsx'
 import EmptyState from '../components/common/EmptyState.jsx'
+import ExpenseForm from '../components/expense/ExpenseForm.jsx'
 import { useBalances } from '../hooks/useBalances.js'
 import { useAuth } from '../hooks/useAuth.js'
+import { useFriends } from '../hooks/useFriends.js'
 
 export default function Dashboard() {
 	const { data, isLoading, isError, error, refetch } = useBalances()
 	const { user } = useAuth()
 	const navigate = useNavigate()
 	const [selectedFriend, setSelectedFriend] = useState(null)
+	const [expenseOpen, setExpenseOpen] = useState(false)
+	const friendsQuery = useFriends()
 	const firstName = user?.name?.trim().split(/\s+/)[0] || 'there'
 	const friends = data?.perFriend ?? []
+	const expenseMembers = [user, ...(friendsQuery.data ?? [])]
+		.filter(Boolean)
+		.filter((member, index, list) => list.findIndex(({ id }) => id === member.id) === index)
 
 	return (
 		<div className="mx-auto max-w-5xl">
@@ -23,7 +30,7 @@ export default function Dashboard() {
 					<p className="text-sm font-medium text-slate-500">Your shared expenses</p>
 					<h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900">Hi, {firstName}</h1>
 				</div>
-				<Button onClick={() => {}}>
+				<Button onClick={() => setExpenseOpen(true)} disabled={!user}>
 					<Plus aria-hidden="true" size={17} />
 					Add expense
 				</Button>
@@ -72,6 +79,10 @@ export default function Dashboard() {
 					<p className="sr-only" role="status">Selected {selectedFriend.user?.name} to settle up.</p>
 				)}
 			</section>
+
+				{expenseOpen && (
+					<ExpenseForm members={expenseMembers} groupId={null} onClose={() => setExpenseOpen(false)} />
+				)}
 		</div>
 	)
 }

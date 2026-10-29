@@ -118,6 +118,20 @@ export function splitPercent(totalAmount, percentByUser) {
   return success(allocate(toPaise(totalAmount), entries, percentTotal))
 }
 
+export function previewSplitPercent(totalAmount, percentByUser) {
+  if (!validAmount(totalAmount) || !percentByUser || typeof percentByUser !== 'object' || Array.isArray(percentByUser)) {
+    return []
+  }
+
+  const totalPaise = toPaise(totalAmount)
+  return Object.entries(percentByUser).map(([userId, percent]) => {
+    if (!Number.isFinite(percent) || percent < 0) return { userId, amount: 0 }
+    const percentUnits = Math.round(percent * 100)
+    const product = totalPaise * percentUnits
+    return { userId, amount: fromPaise(Math.floor((product + 5000) / 10000)) }
+  })
+}
+
 export function splitShares(totalAmount, sharesByUser) {
   const totalError = validateTotal(totalAmount)
   if (totalError) return totalError

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { ArrowLeft, Plus } from 'lucide-react'
 import { Link, useParams } from 'react-router-dom'
 import ExpenseCard from '../components/expense/ExpenseCard.jsx'
+import ExpenseForm from '../components/expense/ExpenseForm.jsx'
 import MemberList from '../components/group/MemberList.jsx'
 import GroupTypeIcon from '../components/group/GroupTypeIcon.jsx'
 import Button from '../components/common/Button.jsx'
@@ -23,6 +24,7 @@ export default function GroupDetail() {
 	const deleteExpense = useDeleteExpense()
 	const { user } = useAuth()
 	const [expenseToDelete, setExpenseToDelete] = useState(null)
+	const [expenseFormOpen, setExpenseFormOpen] = useState(false)
 	const isLoading = groupQuery.isLoading || expensesQuery.isLoading || balancesQuery.isLoading || friendsQuery.isLoading
 	const isError = groupQuery.isError || expensesQuery.isError || balancesQuery.isError || friendsQuery.isError
 
@@ -97,7 +99,7 @@ export default function GroupDetail() {
 					</div>
 				</div>
 				<div className="flex flex-wrap gap-2">
-					<Button onClick={() => { }}><Plus aria-hidden="true" size={17} /> Add expense</Button>
+					<Button onClick={() => setExpenseFormOpen(true)}><Plus aria-hidden="true" size={17} /> Add expense</Button>
 					<Button variant="secondary" onClick={() => { }}>Settle up</Button>
 				</div>
 			</header>
@@ -110,7 +112,7 @@ export default function GroupDetail() {
 							<EmptyState
 								title="No expenses yet"
 								message="Expenses added to this group will appear here."
-								action={{ label: 'Add expense', onClick: () => { } }}
+								action={{ label: 'Add expense', onClick: () => setExpenseFormOpen(true) }}
 							/>
 						</div>
 					) : (
@@ -160,6 +162,9 @@ export default function GroupDetail() {
 				danger
 				loading={deleteExpense.isPending}
 			/>
+			{expenseFormOpen && (
+				<ExpenseForm members={members} groupId={group.id} onClose={() => setExpenseFormOpen(false)} />
+			)}
 		</div>
 	)
 }
