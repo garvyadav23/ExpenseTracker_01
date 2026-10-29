@@ -27,6 +27,7 @@ export async function createGroup(input) {
 	const group = {
 		id: nextId('g', mockState.groups),
 		name: input.name.trim(),
+		type: input.type ?? 'Other',
 		description: input.description ?? '',
 		memberIds,
 		createdBy: CURRENT_USER_ID,
