@@ -34,8 +34,8 @@ export function ToastProvider({ children }) {
         {toasts.map((toast) => {
           const Icon = toast.type === 'success' ? CheckCircle2 : XCircle
           const color = toast.type === 'success'
-            ? 'border-emerald-200 bg-white text-emerald-900'
-            : 'border-rose-200 bg-white text-rose-900'
+            ? 'border-emerald-200 dark:border-emerald-700 bg-white dark:bg-gray-900 text-emerald-900 dark:text-green-400'
+            : 'border-rose-200 dark:border-red-900 bg-white dark:bg-gray-900 text-rose-900 dark:text-red-400'
           return (
             <div key={toast.id} className={`pointer-events-auto flex items-start gap-3 rounded-md border px-4 py-3 shadow-lg ${color}`} role="status">
               <Icon className="mt-0.5 size-5 shrink-0" aria-hidden="true" />
@@ -44,7 +44,7 @@ export function ToastProvider({ children }) {
                 type="button"
                 aria-label="Dismiss notification"
                 onClick={() => dismiss(toast.id)}
-                className="-mr-1 -mt-1 grid size-10 shrink-0 place-items-center rounded text-slate-500 hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700"
+                className="-mr-1 -mt-1 grid size-10 shrink-0 place-items-center rounded text-slate-500 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-800 hover:text-slate-900 dark:hover:text-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 dark:focus-visible:ring-emerald-400"
               >
                 <X size={17} />
               </button>

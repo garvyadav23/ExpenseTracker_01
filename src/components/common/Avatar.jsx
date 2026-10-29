@@ -1,10 +1,10 @@
 const colors = [
-  'bg-emerald-100 text-emerald-900',
-  'bg-sky-100 text-sky-900',
-  'bg-amber-100 text-amber-900',
-  'bg-rose-100 text-rose-900',
-  'bg-cyan-100 text-cyan-900',
-  'bg-lime-100 text-lime-900',
+  'bg-emerald-100 dark:bg-emerald-950/50 text-emerald-900 dark:text-green-400',
+  'bg-sky-100 dark:bg-sky-950/40 text-sky-900 dark:text-sky-300',
+  'bg-amber-100 dark:bg-amber-950/40 text-amber-900 dark:text-amber-300',
+  'bg-rose-100 dark:bg-red-950/40 text-rose-900 dark:text-red-400',
+  'bg-cyan-100 dark:bg-cyan-950/40 text-cyan-900 dark:text-cyan-300',
+  'bg-lime-100 dark:bg-lime-950/40 text-lime-900 dark:text-lime-300',
 ]
 
 const sizes = {

@@ -115,15 +115,15 @@ export default function ExpenseForm({ members = [], groupId = null, onClose, ini
         </Select>
 
         <fieldset className="space-y-2">
-          <legend className="text-sm font-medium text-slate-700">Participants</legend>
+          <legend className="text-sm font-medium text-slate-700 dark:text-gray-300">Participants</legend>
           {members.length === 0 ? <EmptyState title="No participants" message="Add members before creating an expense." /> : (
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
             {members.map((member) => (
-              <label key={member.id} className="flex min-h-10 cursor-pointer items-center gap-3 rounded-md border border-slate-200 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">
+              <label key={member.id} className="flex min-h-10 cursor-pointer items-center gap-3 rounded-md border border-slate-200 dark:border-gray-800 px-3 py-2 text-sm text-slate-700 dark:text-gray-300 hover:bg-slate-50 dark:hover:bg-gray-950">
                 <input
                   type="checkbox"
                   value={member.id}
-                  className="size-4 rounded border-slate-300 text-emerald-800 focus:ring-emerald-700"
+                  className="size-4 rounded border-slate-300 dark:border-gray-700 text-emerald-800 dark:text-green-400 focus:ring-emerald-700 dark:focus:ring-emerald-400"
                   {...register('participantIds')}
                 />
                 {member.name}
@@ -131,7 +131,7 @@ export default function ExpenseForm({ members = [], groupId = null, onClose, ini
             ))}
           </div>
           )}
-          {errors.participantIds?.message && <p className="text-sm text-rose-700">{errors.participantIds.message}</p>}
+          {errors.participantIds?.message && <p className="text-sm text-rose-700 dark:text-red-400">{errors.participantIds.message}</p>}
         </fieldset>
 
         <SplitSelector
@@ -142,7 +142,7 @@ export default function ExpenseForm({ members = [], groupId = null, onClose, ini
           onChange={handleSplitChange}
         />
 
-        <div className="flex justify-end gap-2 border-t border-slate-100 pt-4">
+        <div className="flex justify-end gap-2 border-t border-slate-100 dark:border-gray-800 pt-4">
           <Button type="button" variant="secondary" onClick={onClose} disabled={mutation.isPending}>Cancel</Button>
           <Button type="submit" loading={mutation.isPending} disabled={!isValid || !splitResult.valid || participants.length === 0}>
             {initialValues ? 'Save changes' : 'Save expense'}

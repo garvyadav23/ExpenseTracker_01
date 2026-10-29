@@ -114,7 +114,7 @@ export default function SplitSelector({ totalAmount, participants = [], onChange
 
   return (
     <section className="space-y-4" aria-label="Expense split">
-      <div role="tablist" aria-label="Split method" className="grid grid-cols-4 rounded-md bg-slate-100 p-1">
+      <div role="tablist" aria-label="Split method" className="grid grid-cols-4 rounded-md bg-slate-100 dark:bg-gray-800 p-1">
         {splitModes.map((mode) => (
           <button
             key={mode}
@@ -123,7 +123,7 @@ export default function SplitSelector({ totalAmount, participants = [], onChange
             aria-selected={activeMode === mode}
             onClick={() => changeMode(mode)}
             className={`min-h-10 rounded px-2 text-xs font-semibold transition-colors sm:text-sm ${
-              activeMode === mode ? 'bg-white text-emerald-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
+              activeMode === mode ? 'bg-white dark:bg-gray-900 text-emerald-900 dark:text-green-400 shadow-sm' : 'text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-gray-100'
             }`}
           >
             {mode}
@@ -139,7 +139,7 @@ export default function SplitSelector({ totalAmount, participants = [], onChange
             const preview = calculation.previewSplits.find((item) => item.userId === participant.id)
             return (
               <div key={participant.id} className="grid grid-cols-[minmax(0,1fr)_8rem] items-center gap-3">
-                <label htmlFor={`split-${splitType}-${participant.id}`} className="truncate text-sm font-medium text-slate-700">
+                <label htmlFor={`split-${splitType}-${participant.id}`} className="truncate text-sm font-medium text-slate-700 dark:text-gray-300">
                   {participant.name}
                 </label>
                 {splitType === 'exact' ? (
@@ -151,7 +151,7 @@ export default function SplitSelector({ totalAmount, participants = [], onChange
                     inputMode="decimal"
                     value={exactAmounts[participant.id] ?? ''}
                     onChange={(event) => setExactAmounts((current) => ({ ...current, [participant.id]: event.target.value }))}
-                    className="h-10 w-full rounded-md border border-slate-300 px-3 text-right text-sm outline-none focus:border-emerald-700 focus:ring-2 focus:ring-emerald-100"
+                    className="h-10 w-full rounded-md border border-slate-300 dark:border-gray-700 px-3 text-right text-sm outline-none focus:border-emerald-700 dark:focus:border-emerald-700 focus:ring-2 focus:ring-emerald-100 dark:focus:ring-emerald-400"
                     aria-label={`${participant.name} exact amount`}
                   />
                 ) : splitType === 'percent' ? (
@@ -164,10 +164,10 @@ export default function SplitSelector({ totalAmount, participants = [], onChange
                       inputMode="decimal"
                       value={percentages[participant.id] ?? '0'}
                       onChange={(event) => setPercentages((current) => ({ ...current, [participant.id]: event.target.value }))}
-                      className="h-10 w-full rounded-md border border-slate-300 px-3 pr-7 text-right text-sm outline-none focus:border-emerald-700 focus:ring-2 focus:ring-emerald-100"
+                      className="h-10 w-full rounded-md border border-slate-300 dark:border-gray-700 px-3 pr-7 text-right text-sm outline-none focus:border-emerald-700 dark:focus:border-emerald-700 focus:ring-2 focus:ring-emerald-100 dark:focus:ring-emerald-400"
                       aria-label={`${participant.name} percentage`}
                     />
-                    <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-500">%</span>
+                    <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-500 dark:text-gray-400">%</span>
                   </div>
                 ) : splitType === 'shares' ? (
                   <input
@@ -178,16 +178,16 @@ export default function SplitSelector({ totalAmount, participants = [], onChange
                     inputMode="decimal"
                     value={shares[participant.id] ?? '1'}
                     onChange={(event) => setShares((current) => ({ ...current, [participant.id]: event.target.value }))}
-                    className="h-10 w-full rounded-md border border-slate-300 px-3 text-right text-sm outline-none focus:border-emerald-700 focus:ring-2 focus:ring-emerald-100"
+                    className="h-10 w-full rounded-md border border-slate-300 dark:border-gray-700 px-3 text-right text-sm outline-none focus:border-emerald-700 dark:focus:border-emerald-700 focus:ring-2 focus:ring-emerald-100 dark:focus:ring-emerald-400"
                     aria-label={`${participant.name} shares`}
                   />
                 ) : (
-                  <span className="text-right text-sm font-semibold text-slate-800">
+                  <span className="text-right text-sm font-semibold text-slate-800 dark:text-gray-200">
                     {preview ? formatCurrency(preview.owedAmount) : formatCurrency(0)}
                   </span>
                 )}
                 {splitType !== 'equal' && (
-                  <p className="col-span-2 -mt-2 text-right text-xs font-medium text-slate-600">
+                  <p className="col-span-2 -mt-2 text-right text-xs font-medium text-slate-600 dark:text-gray-400">
                     {preview ? formatCurrency(preview.owedAmount) : formatCurrency(0)}
                   </p>
                 )}
@@ -198,7 +198,7 @@ export default function SplitSelector({ totalAmount, participants = [], onChange
       )}
 
       {splitType === 'exact' && exactInputValid && (
-        <p className={`text-sm ${exactDifference < 0 ? 'text-rose-700' : 'text-slate-600'}`}>
+        <p className={`text-sm ${exactDifference < 0 ? 'text-rose-700 dark:text-red-400' : 'text-slate-600 dark:text-gray-400'}`}>
           {exactDifference > 0
             ? `${formatCurrency(exactDifference / 100)} left to assign`
             : exactDifference < 0
@@ -207,7 +207,7 @@ export default function SplitSelector({ totalAmount, participants = [], onChange
         </p>
       )}
       {splitType === 'percent' && percentInputValid && (
-        <p className={`text-sm ${percentDifference < 0 ? 'text-rose-700' : 'text-slate-600'}`}>
+        <p className={`text-sm ${percentDifference < 0 ? 'text-rose-700 dark:text-red-400' : 'text-slate-600 dark:text-gray-400'}`}>
           {percentDifference > 0
             ? `${formatPercentUnits(percentDifference)} left to assign`
             : percentDifference < 0
@@ -216,13 +216,13 @@ export default function SplitSelector({ totalAmount, participants = [], onChange
         </p>
       )}
       {calculation.error && splitType !== 'exact' && splitType !== 'percent' && (
-        <p role="alert" className="text-sm text-rose-700">{calculation.error}</p>
+        <p role="alert" className="text-sm text-rose-700 dark:text-red-400">{calculation.error}</p>
       )}
       {splitType === 'exact' && !exactInputValid && (
-        <p role="alert" className="text-sm text-rose-700">Use amounts with no more than two decimal places.</p>
+        <p role="alert" className="text-sm text-rose-700 dark:text-red-400">Use amounts with no more than two decimal places.</p>
       )}
       {splitType === 'percent' && !percentInputValid && (
-        <p role="alert" className="text-sm text-rose-700">Use percentages with no more than two decimal places.</p>
+        <p role="alert" className="text-sm text-rose-700 dark:text-red-400">Use percentages with no more than two decimal places.</p>
       )}
     </section>
   )

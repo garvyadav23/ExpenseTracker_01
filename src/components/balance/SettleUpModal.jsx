@@ -86,7 +86,7 @@ export default function SettleUpModal({
 						<Input label="Date" type="date" error={errors.date?.message} {...register('date')} />
 					</div>
 					<Input label="Note (optional)" placeholder="Add a note" autoComplete="off" {...register('note')} />
-					<div className="flex justify-end gap-2 border-t border-slate-100 pt-4">
+					<div className="flex justify-end gap-2 border-t border-slate-100 dark:border-gray-800 pt-4">
 						<Button type="button" variant="secondary" onClick={onClose} disabled={createSettlement.isPending}>Cancel</Button>
 						<Button type="submit" loading={createSettlement.isPending} disabled={!isValid}>Record settlement</Button>
 					</div>

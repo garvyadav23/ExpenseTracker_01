@@ -9,11 +9,11 @@ const cards = [
 ]
 
 function amountClass(key, amount) {
-  if (key === 'owing') return 'text-rose-700'
-  if (key === 'owed') return 'text-emerald-800'
-  if (amount > 0) return 'text-emerald-800'
-  if (amount < 0) return 'text-rose-700'
-  return 'text-slate-500'
+  if (key === 'owing') return 'text-rose-700 dark:text-red-400'
+  if (key === 'owed') return 'text-emerald-800 dark:text-green-400'
+  if (amount > 0) return 'text-emerald-800 dark:text-green-400'
+  if (amount < 0) return 'text-rose-700 dark:text-red-400'
+  return 'text-slate-500 dark:text-gray-400'
 }
 
 export default function BalanceSummary({ overall, loading = false }) {
@@ -23,7 +23,7 @@ export default function BalanceSummary({ overall, loading = false }) {
         const amount = key === 'total' ? overall?.netBalance : key === 'owing' ? overall?.totalOwing : overall?.totalOwed
 
         return (
-          <article key={key} className="min-h-32 rounded-md border border-slate-200 bg-white p-5">
+          <article key={key} className="min-h-32 rounded-md border border-slate-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5">
             {loading ? (
               <div className="space-y-5">
                 <Skeleton className="h-4 w-28" />
@@ -31,7 +31,7 @@ export default function BalanceSummary({ overall, loading = false }) {
               </div>
             ) : (
               <>
-                <div className="flex items-center gap-2 text-sm font-medium text-slate-600">
+                <div className="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-gray-400">
                   <Icon aria-hidden="true" size={17} strokeWidth={1.8} />
                   <span>{label}</span>
                 </div>

@@ -30,8 +30,8 @@ export default function Dashboard() {
 		<div className="mx-auto max-w-5xl">
 			<header className="mb-7 flex flex-wrap items-center justify-between gap-4">
 				<div>
-					<p className="text-sm font-medium text-slate-500">Your shared expenses</p>
-					<h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900">Hi, {firstName}</h1>
+					<p className="text-sm font-medium text-slate-500 dark:text-gray-400">Your shared expenses</p>
+					<h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900 dark:text-gray-100">Hi, {firstName}</h1>
 				</div>
 				<div className="flex flex-wrap gap-2">
 					<Button variant="secondary" onClick={() => setSettlementDefaults({})} disabled={!user}>
@@ -49,21 +49,21 @@ export default function Dashboard() {
 
 			<section className="mt-8">
 				<div className="mb-3 flex items-center justify-between">
-					<h2 className="text-lg font-semibold text-slate-900">Friends</h2>
+					<h2 className="text-lg font-semibold text-slate-900 dark:text-gray-100">Friends</h2>
 					{!isLoading && !hasError && friends.length > 0 && (
-						<Link to="/friends" className="text-sm font-medium text-emerald-800 hover:text-emerald-950">
+						<Link to="/friends" className="text-sm font-medium text-emerald-800 dark:text-green-400 hover:text-emerald-950 dark:hover:text-green-400">
 							View all
 						</Link>
 					)}
 				</div>
 
 				{isLoading || friendsQuery.isLoading ? (
-					<div className="rounded-md border border-slate-200 bg-white">
+					<div className="rounded-md border border-slate-200 dark:border-gray-800 bg-white dark:bg-gray-900">
 						<FriendBalanceList loading />
 					</div>
 				) : hasError ? (
-					<div className="rounded-md border border-rose-200 bg-rose-50 p-5">
-						<p role="alert" className="text-sm text-rose-800">
+					<div className="rounded-md border border-rose-200 dark:border-red-900 bg-rose-50 dark:bg-red-950/40 p-5">
+						<p role="alert" className="text-sm text-rose-800 dark:text-red-400">
 							{pageError?.message || 'Unable to load your balances.'}
 						</p>
 						<Button className="mt-4" variant="secondary" onClick={() => Promise.all([refetch(), friendsQuery.refetch()])}>
@@ -71,7 +71,7 @@ export default function Dashboard() {
 						</Button>
 					</div>
 				) : friends.length === 0 ? (
-					<div className="rounded-md border border-slate-200 bg-white">
+					<div className="rounded-md border border-slate-200 dark:border-gray-800 bg-white dark:bg-gray-900">
 						<EmptyState
 							title="No friends yet"
 							message="Add friends to start keeping track of shared expenses."
@@ -79,7 +79,7 @@ export default function Dashboard() {
 						/>
 					</div>
 				) : (
-					<div className="rounded-md border border-slate-200 bg-white">
+					<div className="rounded-md border border-slate-200 dark:border-gray-800 bg-white dark:bg-gray-900">
 						<FriendBalanceList
 							friends={friends}
 							onSettle={(friendBalance) => {

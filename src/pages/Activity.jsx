@@ -7,12 +7,12 @@ import Skeleton from '../components/common/Skeleton.jsx'
 import { useActivities } from '../hooks/useActivities.js'
 
 const activityTypes = {
-	'expense.created': { icon: ReceiptText, label: 'Expense added', className: 'bg-emerald-50 text-emerald-800' },
-	'expense.updated': { icon: ReceiptText, label: 'Expense updated', className: 'bg-emerald-50 text-emerald-800' },
-	'expense.deleted': { icon: Trash2, label: 'Expense deleted', className: 'bg-rose-50 text-rose-700' },
-	'settlement.created': { icon: CircleDollarSign, label: 'Settlement', className: 'bg-sky-50 text-sky-800' },
-	'group.created': { icon: FolderPlus, label: 'Group created', className: 'bg-amber-50 text-amber-800' },
-	'friend.added': { icon: UserPlus, label: 'Friend added', className: 'bg-cyan-50 text-cyan-800' },
+	'expense.created': { icon: ReceiptText, label: 'Expense added', className: 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-green-400' },
+	'expense.updated': { icon: ReceiptText, label: 'Expense updated', className: 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-green-400' },
+	'expense.deleted': { icon: Trash2, label: 'Expense deleted', className: 'bg-rose-50 dark:bg-red-950/40 text-rose-700 dark:text-red-400' },
+	'settlement.created': { icon: CircleDollarSign, label: 'Settlement', className: 'bg-sky-50 dark:bg-sky-950/40 text-sky-800 dark:text-sky-300' },
+	'group.created': { icon: FolderPlus, label: 'Group created', className: 'bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300' },
+	'friend.added': { icon: UserPlus, label: 'Friend added', className: 'bg-cyan-50 dark:bg-cyan-950/40 text-cyan-800 dark:text-cyan-300' },
 }
 
 function dateHeading(date) {
@@ -27,7 +27,7 @@ function ActivitySkeleton() {
 			<Skeleton className="size-10 rounded-full" />
 			<span className="flex-1 space-y-2 pt-1">
 				<Skeleton className="block h-4 w-3/4" />
-				<Skeleton className="block h-3 w-28 bg-slate-100" />
+				<Skeleton className="block h-3 w-28 bg-slate-100 dark:bg-gray-800" />
 			</span>
 		</div>
 	)
@@ -47,29 +47,29 @@ export default function Activity() {
 	return (
 		<div className="mx-auto max-w-4xl">
 			<header className="mb-7">
-				<p className="text-sm font-medium text-slate-500">A timeline of shared expenses</p>
-				<h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900">Activity</h1>
+				<p className="text-sm font-medium text-slate-500 dark:text-gray-400">A timeline of shared expenses</p>
+				<h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900 dark:text-gray-100">Activity</h1>
 			</header>
 
 			{isLoading ? (
-				<div className="divide-y divide-slate-100 rounded-md border border-slate-200 bg-white px-5">
+				<div className="divide-y divide-slate-100 dark:divide-gray-800 rounded-md border border-slate-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-5">
 					{[0, 1, 2, 3].map((row) => <ActivitySkeleton key={row} />)}
 				</div>
 			) : isError ? (
-				<div className="rounded-md border border-rose-200 bg-rose-50 p-5">
-					<p role="alert" className="text-sm text-rose-800">{error?.message || 'Unable to load activity.'}</p>
+				<div className="rounded-md border border-rose-200 dark:border-red-900 bg-rose-50 dark:bg-red-950/40 p-5">
+					<p role="alert" className="text-sm text-rose-800 dark:text-red-400">{error?.message || 'Unable to load activity.'}</p>
 					<Button className="mt-4" variant="secondary" onClick={() => refetch()}>Retry</Button>
 				</div>
 			) : groupedActivities.size === 0 ? (
-				<div className="rounded-md border border-slate-200 bg-white">
+				<div className="rounded-md border border-slate-200 dark:border-gray-800 bg-white dark:bg-gray-900">
 					<EmptyState title="No activity yet" message="Shared expenses, settlements, and new groups will show up here." />
 				</div>
 			) : (
 				<div className="space-y-7">
 					{[...groupedActivities].map(([heading, activities]) => (
 						<section key={heading}>
-							<h2 className="mb-2 text-sm font-semibold text-slate-700">{heading}</h2>
-							<ul className="divide-y divide-slate-100 rounded-md border border-slate-200 bg-white px-4 sm:px-5">
+							<h2 className="mb-2 text-sm font-semibold text-slate-700 dark:text-gray-300">{heading}</h2>
+							<ul className="divide-y divide-slate-100 dark:divide-gray-800 rounded-md border border-slate-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 sm:px-5">
 								{activities.map((activity) => {
 									const type = activityTypes[activity.type] ?? activityTypes['expense.created']
 									const Icon = type.icon
@@ -79,8 +79,8 @@ export default function Activity() {
 												<Icon aria-hidden="true" size={18} />
 											</span>
 											<div className="min-w-0 flex-1">
-												<p className="text-sm leading-6 text-slate-800">{activity.message}</p>
-												<p className="mt-1 text-xs text-slate-500">{formatDistanceToNow(new Date(activity.createdAt), { addSuffix: true })}</p>
+												<p className="text-sm leading-6 text-slate-800 dark:text-gray-200">{activity.message}</p>
+												<p className="mt-1 text-xs text-slate-500 dark:text-gray-400">{formatDistanceToNow(new Date(activity.createdAt), { addSuffix: true })}</p>
 											</div>
 										</li>
 									)

@@ -2,8 +2,8 @@ import Skeleton from './Skeleton.jsx'
 
 export default function Loader({ label = 'Loading', fullPage = false, className = '' }) {
   const content = (
-    <div className={`flex items-center gap-3 text-sm font-medium text-slate-600 ${className}`} role="status" aria-live="polite">
-      <span className="size-5 animate-spin rounded-full border-2 border-emerald-200 border-t-emerald-700" />
+    <div className={`flex items-center gap-3 text-sm font-medium text-slate-600 dark:text-gray-400 ${className}`} role="status" aria-live="polite">
+      <span className="size-5 animate-spin rounded-full border-2 border-emerald-200 dark:border-emerald-700 border-t-emerald-700" />
       {label}
     </div>
   )
@@ -11,10 +11,10 @@ export default function Loader({ label = 'Loading', fullPage = false, className 
   if (!fullPage) return content
 
   return (
-    <main className="grid min-h-screen place-items-center bg-slate-50 px-5 py-10">
+    <main className="grid min-h-screen place-items-center bg-slate-50 dark:bg-gray-950 px-5 py-10">
       <div className="w-full max-w-5xl space-y-8" role="status" aria-live="polite">
         <span className="sr-only">{label}</span>
-        <div className="flex items-center justify-between border-b border-slate-200 pb-4">
+        <div className="flex items-center justify-between border-b border-slate-200 dark:border-gray-800 pb-4">
           <Skeleton className="h-6 w-40" />
           <Skeleton className="size-10 rounded-full" />
         </div>

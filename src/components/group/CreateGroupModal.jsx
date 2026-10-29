@@ -63,24 +63,24 @@ export default function CreateGroupModal({ open, onClose }) {
         </Select>
 
         <fieldset className="space-y-2">
-          <legend className="text-sm font-medium text-slate-700">Choose members</legend>
+          <legend className="text-sm font-medium text-slate-700 dark:text-gray-300">Choose members</legend>
           {friendsQuery.isLoading ? (
             <div className="space-y-2" aria-label="Loading friends">
-              {[0, 1, 2].map((item) => <Skeleton key={item} className="h-10 bg-slate-100" />)}
+              {[0, 1, 2].map((item) => <Skeleton key={item} className="h-10 bg-slate-100 dark:bg-gray-800" />)}
             </div>
           ) : friendsQuery.isError ? (
             <div>
-              <p role="alert" className="text-sm text-rose-700">{friendsQuery.error.message}</p>
+              <p role="alert" className="text-sm text-rose-700 dark:text-red-400">{friendsQuery.error.message}</p>
               <Button className="mt-3" variant="secondary" size="sm" onClick={() => friendsQuery.refetch()}>Retry</Button>
             </div>
           ) : friendsQuery.data?.length ? (
-            <div className="max-h-52 divide-y divide-slate-100 overflow-y-auto rounded-md border border-slate-200">
+            <div className="max-h-52 divide-y divide-slate-100 dark:divide-gray-800 overflow-y-auto rounded-md border border-slate-200 dark:border-gray-800">
               {friendsQuery.data.map((friend) => (
-                <label key={friend.id} className="flex min-h-11 cursor-pointer items-center gap-3 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">
+                <label key={friend.id} className="flex min-h-11 cursor-pointer items-center gap-3 px-3 py-2 text-sm text-slate-700 dark:text-gray-300 hover:bg-slate-50 dark:hover:bg-gray-950">
                   <input
                     type="checkbox"
                     value={friend.id}
-                    className="size-4 rounded border-slate-300 text-emerald-800 focus:ring-emerald-700"
+                    className="size-4 rounded border-slate-300 dark:border-gray-700 text-emerald-800 dark:text-green-400 focus:ring-emerald-700 dark:focus:ring-emerald-400"
                     {...register('memberIds')}
                   />
                   <span>{friend.name}</span>
@@ -90,11 +90,11 @@ export default function CreateGroupModal({ open, onClose }) {
           ) : (
             <EmptyState title="No friends yet" message="Add a friend before creating a group." />
           )}
-          {errors.memberIds?.message && <p className="text-sm text-rose-700">{errors.memberIds.message}</p>}
+          {errors.memberIds?.message && <p className="text-sm text-rose-700 dark:text-red-400">{errors.memberIds.message}</p>}
         </fieldset>
 
-        <p className="text-xs text-slate-500">You will be added to the group automatically.</p>
-        <div className="flex justify-end gap-2 border-t border-slate-100 pt-4">
+        <p className="text-xs text-slate-500 dark:text-gray-400">You will be added to the group automatically.</p>
+        <div className="flex justify-end gap-2 border-t border-slate-100 dark:border-gray-800 pt-4">
           <Button type="button" variant="secondary" onClick={close}>Cancel</Button>
           <Button type="submit" loading={createGroup.isPending}>Create group</Button>
         </div>

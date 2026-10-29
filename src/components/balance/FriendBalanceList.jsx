@@ -9,9 +9,9 @@ function FriendBalanceSkeleton() {
       <Skeleton className="size-10 rounded-full" />
       <span className="flex-1">
         <Skeleton className="block h-4 w-28" />
-        <Skeleton className="mt-2 block h-3 w-40 max-w-full bg-slate-100" />
+        <Skeleton className="mt-2 block h-3 w-40 max-w-full bg-slate-100 dark:bg-gray-800" />
       </span>
-      <Skeleton className="h-10 w-20 bg-slate-100" />
+      <Skeleton className="h-10 w-20 bg-slate-100 dark:bg-gray-800" />
     </div>
   )
 }
@@ -19,7 +19,7 @@ function FriendBalanceSkeleton() {
 export default function FriendBalanceList({ friends = [], onSettle, loading = false }) {
   if (loading) {
     return (
-      <div className="divide-y divide-slate-100">
+      <div className="divide-y divide-slate-100 dark:divide-gray-800">
         {[0, 1, 2].map((row) => <FriendBalanceSkeleton key={row} />)}
       </div>
     )
@@ -30,7 +30,7 @@ export default function FriendBalanceList({ friends = [], onSettle, loading = fa
   )
 
   return (
-    <ul className="divide-y divide-slate-100">
+    <ul className="divide-y divide-slate-100 dark:divide-gray-800">
       {sortedFriends.map((friendBalance) => {
         const { user, userId, netBalance } = friendBalance
         const name = user?.name ?? 'Unknown friend'
@@ -40,17 +40,17 @@ export default function FriendBalanceList({ friends = [], onSettle, loading = fa
             ? `You owe ${name} ${formatCurrency(Math.abs(netBalance))}`
             : 'Settled up'
         const balanceClass = netBalance > 0
-          ? 'text-emerald-800'
+          ? 'text-emerald-800 dark:text-green-400'
           : netBalance < 0
-            ? 'text-rose-700'
-            : 'text-slate-500'
+            ? 'text-rose-700 dark:text-red-400'
+            : 'text-slate-500 dark:text-gray-400'
 
         return (
           <li key={userId} className="flex flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center">
             <div className="flex min-w-0 flex-1 items-center gap-3">
               <Avatar name={name} size="md" />
               <div className="min-w-0">
-                <p className="truncate text-sm font-semibold text-slate-900">{name}</p>
+                <p className="truncate text-sm font-semibold text-slate-900 dark:text-gray-100">{name}</p>
                 <p className={`mt-0.5 text-sm ${balanceClass}`}>{balanceMessage}</p>
               </div>
             </div>

@@ -37,7 +37,7 @@ function AddFriendModal({ onClose }) {
 		<Modal open onClose={addFriend.isPending ? () => {} : onClose} title="Add a friend">
 			<form className="space-y-5" noValidate onSubmit={submit}>
 				<Input label="Email address" type="email" autoComplete="email" placeholder="friend@example.com" error={errors.email?.message} {...register('email')} />
-				<div className="flex justify-end gap-2 border-t border-slate-100 pt-4">
+				<div className="flex justify-end gap-2 border-t border-slate-100 dark:border-gray-800 pt-4">
 					<Button type="button" variant="secondary" onClick={onClose} disabled={addFriend.isPending}>Cancel</Button>
 					<Button type="submit" loading={addFriend.isPending} disabled={!isValid}>Add friend</Button>
 				</div>
@@ -52,9 +52,9 @@ function FriendSkeleton() {
 			<Skeleton className="size-10 rounded-full" />
 			<span className="flex-1 space-y-2">
 				<Skeleton className="block h-4 w-32" />
-				<Skeleton className="block h-3 w-44 max-w-full bg-slate-100" />
+				<Skeleton className="block h-3 w-44 max-w-full bg-slate-100 dark:bg-gray-800" />
 			</span>
-			<Skeleton className="h-10 w-20 bg-slate-100" />
+			<Skeleton className="h-10 w-20 bg-slate-100 dark:bg-gray-800" />
 		</li>
 	)
 }
@@ -83,28 +83,28 @@ export default function Friends() {
 		<div className="mx-auto max-w-5xl">
 			<header className="mb-7 flex flex-wrap items-center justify-between gap-4">
 				<div>
-					<p className="text-sm font-medium text-slate-500">People you share expenses with</p>
-					<h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900">Friends</h1>
+					<p className="text-sm font-medium text-slate-500 dark:text-gray-400">People you share expenses with</p>
+					<h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900 dark:text-gray-100">Friends</h1>
 				</div>
 				<Button onClick={() => setAddFriendOpen(true)}><UserPlus aria-hidden="true" size={17} /> Add friend</Button>
 			</header>
 
 			{isLoading ? (
-				<div className="rounded-md border border-slate-200 bg-white">
-					<ul className="divide-y divide-slate-100">{[0, 1, 2].map((row) => <FriendSkeleton key={row} />)}</ul>
+				<div className="rounded-md border border-slate-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+					<ul className="divide-y divide-slate-100 dark:divide-gray-800">{[0, 1, 2].map((row) => <FriendSkeleton key={row} />)}</ul>
 				</div>
 			) : isError ? (
-				<div className="rounded-md border border-rose-200 bg-rose-50 p-5">
-					<p role="alert" className="text-sm text-rose-800">{balancesQuery.error?.message || friendsQuery.error?.message || 'Unable to load your friends.'}</p>
+				<div className="rounded-md border border-rose-200 dark:border-red-900 bg-rose-50 dark:bg-red-950/40 p-5">
+					<p role="alert" className="text-sm text-rose-800 dark:text-red-400">{balancesQuery.error?.message || friendsQuery.error?.message || 'Unable to load your friends.'}</p>
 					<Button className="mt-4" variant="secondary" onClick={() => Promise.all([balancesQuery.refetch(), friendsQuery.refetch()])}>Retry</Button>
 				</div>
 			) : friends.length === 0 ? (
-				<div className="rounded-md border border-slate-200 bg-white">
+				<div className="rounded-md border border-slate-200 dark:border-gray-800 bg-white dark:bg-gray-900">
 					<EmptyState title="No friends yet" message="Add a friend to start tracking shared expenses." action={{ label: 'Add friend', onClick: () => setAddFriendOpen(true) }} />
 				</div>
 			) : (
-				<div className="rounded-md border border-slate-200 bg-white">
-					<ul className="divide-y divide-slate-100">
+				<div className="rounded-md border border-slate-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+					<ul className="divide-y divide-slate-100 dark:divide-gray-800">
 						{friends.map(({ user: friend, userId, netBalance }) => {
 							const name = friend?.name ?? 'Unknown friend'
 							const balanceText = netBalance > 0
@@ -112,14 +112,14 @@ export default function Friends() {
 								: netBalance < 0
 									? `You owe ${formatCurrency(Math.abs(netBalance))}`
 									: 'Settled up'
-							const balanceClass = netBalance > 0 ? 'text-emerald-800' : netBalance < 0 ? 'text-rose-700' : 'text-slate-500'
+							const balanceClass = netBalance > 0 ? 'text-emerald-800 dark:text-green-400' : netBalance < 0 ? 'text-rose-700 dark:text-red-400' : 'text-slate-500 dark:text-gray-400'
 							return (
 								<li key={userId} className="flex flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center">
 									<div className="flex min-w-0 flex-1 items-center gap-3">
 										<Avatar name={name} />
 										<div className="min-w-0">
-											<p className="truncate text-sm font-semibold text-slate-900">{name}</p>
-											<p className="truncate text-sm text-slate-500">{friend?.email || 'No email available'}</p>
+											<p className="truncate text-sm font-semibold text-slate-900 dark:text-gray-100">{name}</p>
+											<p className="truncate text-sm text-slate-500 dark:text-gray-400">{friend?.email || 'No email available'}</p>
 											<p className={`mt-1 text-sm font-medium ${balanceClass}`}>{balanceText}</p>
 										</div>
 									</div>
