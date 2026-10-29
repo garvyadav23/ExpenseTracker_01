@@ -77,7 +77,7 @@ export default function Register() {
 						className="flex h-11 w-full items-center justify-center gap-2 rounded-md bg-emerald-800 px-4 text-sm font-semibold text-white transition hover:bg-emerald-900 disabled:cursor-not-allowed disabled:opacity-65"
 					>
 						{isSubmitting && <span className="size-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />}
-						{isSubmitting ? 'Creating account…' : 'Create account'}
+						{isSubmitting ? 'Creating account...' : 'Create account'}
 					</button>
 				</form>
 

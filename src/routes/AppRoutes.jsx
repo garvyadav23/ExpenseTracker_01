@@ -14,7 +14,7 @@ import Loader from '../components/common/Loader.jsx'
 
 function PublicOnlyRoute() {
 	const { user, loading } = useAuth()
-	if (loading) return <Loader label="Restoring your session" />
+	if (loading) return <Loader fullPage label="Restoring your session" />
 	return user ? <Navigate to="/" replace /> : <Outlet />
 }
 
