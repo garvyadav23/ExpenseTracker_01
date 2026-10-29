@@ -3,10 +3,12 @@ import { format, formatDistanceToNow, isToday, isYesterday } from 'date-fns'
 import { CircleDollarSign, FolderPlus, ReceiptText, Trash2, UserPlus } from 'lucide-react'
 import Button from '../components/common/Button.jsx'
 import EmptyState from '../components/common/EmptyState.jsx'
+import Skeleton from '../components/common/Skeleton.jsx'
 import { useActivities } from '../hooks/useActivities.js'
 
 const activityTypes = {
 	'expense.created': { icon: ReceiptText, label: 'Expense added', className: 'bg-emerald-50 text-emerald-800' },
+	'expense.updated': { icon: ReceiptText, label: 'Expense updated', className: 'bg-emerald-50 text-emerald-800' },
 	'expense.deleted': { icon: Trash2, label: 'Expense deleted', className: 'bg-rose-50 text-rose-700' },
 	'settlement.created': { icon: CircleDollarSign, label: 'Settlement', className: 'bg-sky-50 text-sky-800' },
 	'group.created': { icon: FolderPlus, label: 'Group created', className: 'bg-amber-50 text-amber-800' },
@@ -21,11 +23,11 @@ function dateHeading(date) {
 
 function ActivitySkeleton() {
 	return (
-		<div aria-hidden="true" className="flex animate-pulse gap-4 py-5">
-			<span className="size-10 rounded-full bg-slate-200" />
+		<div aria-hidden="true" className="flex gap-4 py-5">
+			<Skeleton className="size-10 rounded-full" />
 			<span className="flex-1 space-y-2 pt-1">
-				<span className="block h-4 w-3/4 rounded bg-slate-200" />
-				<span className="block h-3 w-28 rounded bg-slate-100" />
+				<Skeleton className="block h-4 w-3/4" />
+				<Skeleton className="block h-3 w-28 bg-slate-100" />
 			</span>
 		</div>
 	)

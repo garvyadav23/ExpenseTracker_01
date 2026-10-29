@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { createExpense, deleteExpense, getAllExpenses, getGroupExpenses } from '../api/expense.api.js'
+import { createExpense, deleteExpense, getAllExpenses, getGroupExpenses, updateExpense } from '../api/expense.api.js'
 import { useToast } from './useToast.js'
 import { queryKeys } from './queryKeys.js'
 
@@ -45,6 +45,20 @@ export function useDeleteExpense() {
     mutationFn: deleteExpense,
     onSuccess: async () => {
       toast.success('Expense deleted.')
+      await invalidateExpenseData(queryClient)
+    },
+    onError: (error) => toast.error(error.message),
+  })
+}
+
+export function useUpdateExpense() {
+  const queryClient = useQueryClient()
+  const toast = useToast()
+
+  return useMutation({
+    mutationFn: ({ id, input }) => updateExpense(id, input),
+    onSuccess: async () => {
+      toast.success('Expense updated.')
       await invalidateExpenseData(queryClient)
     },
     onError: (error) => toast.error(error.message),

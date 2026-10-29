@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { formatCurrency } from '../../utils/formatCurrency.js'
+import EmptyState from '../common/EmptyState.jsx'
 import {
   previewSplitPercent,
   splitEqual,
@@ -31,11 +32,23 @@ function formatPercentUnits(units) {
   return `${whole}${fraction ? `.${fraction}` : ''}%`
 }
 
-export default function SplitSelector({ totalAmount, participants = [], value, onChange }) {
-  const [splitType, setSplitType] = useState(value?.splitType ?? 'equal')
-  const [exactAmounts, setExactAmounts] = useState({})
-  const [percentages, setPercentages] = useState({})
-  const [shares, setShares] = useState({})
+function initialPercentages(splits = [], totalAmount) {
+  const totalPaise = Math.round(Number(totalAmount) * 100)
+  let assignedUnits = 0
+  return Object.fromEntries(splits.map((split, index) => {
+    const units = index === splits.length - 1
+      ? 10000 - assignedUnits
+      : totalPaise > 0 ? Math.round((Math.round(split.owedAmount * 100) * 10000) / totalPaise) : 0
+    assignedUnits += units
+    return [split.userId, String(units / 100)]
+  }))
+}
+
+export default function SplitSelector({ totalAmount, participants = [], onChange, initialSplitType = 'equal', initialSplits = [] }) {
+  const [splitType, setSplitType] = useState(initialSplitType)
+  const [exactAmounts, setExactAmounts] = useState(() => Object.fromEntries(initialSplits.map(({ userId, owedAmount }) => [userId, String(owedAmount)])))
+  const [percentages, setPercentages] = useState(() => initialPercentages(initialSplits, totalAmount))
+  const [shares, setShares] = useState(() => Object.fromEntries(initialSplits.map(({ userId, owedAmount }) => [userId, String(owedAmount)])))
   const userIds = useMemo(() => participants.map(({ id }) => id), [participants])
   const amount = Number(totalAmount) || 0
 
@@ -109,7 +122,7 @@ export default function SplitSelector({ totalAmount, participants = [], value, o
             role="tab"
             aria-selected={activeMode === mode}
             onClick={() => changeMode(mode)}
-            className={`min-h-9 rounded px-2 text-xs font-semibold transition-colors sm:text-sm ${
+            className={`min-h-10 rounded px-2 text-xs font-semibold transition-colors sm:text-sm ${
               activeMode === mode ? 'bg-white text-emerald-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -119,7 +132,7 @@ export default function SplitSelector({ totalAmount, participants = [], value, o
       </div>
 
       {participants.length === 0 ? (
-        <p className="text-sm text-slate-600">Select at least one participant to split this expense.</p>
+        <EmptyState title="No split participants" message="Select at least one participant to split this expense." />
       ) : (
         <div className="space-y-2">
           {participants.map((participant) => {

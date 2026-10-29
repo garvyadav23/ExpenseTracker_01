@@ -4,10 +4,11 @@ import { format } from 'date-fns'
 import { useForm, useWatch } from 'react-hook-form'
 import { z } from 'zod'
 import Button from '../common/Button.jsx'
+import EmptyState from '../common/EmptyState.jsx'
 import Input from '../common/Input.jsx'
 import Modal from '../common/Modal.jsx'
 import Select from '../common/Select.jsx'
-import { useCreateExpense } from '../../hooks/useExpenses.js'
+import { useCreateExpense, useUpdateExpense } from '../../hooks/useExpenses.js'
 import SplitSelector from './SplitSelector.jsx'
 
 const expenseSchema = z.object({
@@ -29,6 +30,8 @@ function defaultDate() {
 
 export default function ExpenseForm({ members = [], groupId = null, onClose, initialValues }) {
   const createExpense = useCreateExpense()
+  const updateExpense = useUpdateExpense()
+  const mutation = initialValues?.id ? updateExpense : createExpense
   const defaults = {
     description: initialValues?.description ?? '',
     amount: initialValues?.amount ?? '',
@@ -59,7 +62,7 @@ export default function ExpenseForm({ members = [], groupId = null, onClose, ini
 
   const submit = handleSubmit((values) => {
     if (!splitResult.valid) return
-    createExpense.mutate({
+    const input = {
       groupId,
       description: values.description.trim(),
       amount: values.amount,
@@ -67,11 +70,16 @@ export default function ExpenseForm({ members = [], groupId = null, onClose, ini
       paidBy: values.paidBy,
       splitType: splitResult.splitType,
       splits: splitResult.splits,
-    }, { onSuccess: onClose })
+    }
+    if (initialValues?.id) {
+      updateExpense.mutate({ id: initialValues.id, input }, { onSuccess: onClose })
+    } else {
+      createExpense.mutate(input, { onSuccess: onClose })
+    }
   })
 
   return (
-    <Modal open onClose={createExpense.isPending ? () => {} : onClose} title={initialValues ? 'Edit expense' : 'Add expense'} className="sm:max-w-2xl">
+    <Modal open onClose={mutation.isPending ? () => {} : onClose} title={initialValues ? 'Edit expense' : 'Add expense'} className="sm:max-w-2xl">
       <form className="space-y-5" noValidate onSubmit={submit}>
         <Input
           label="Description"
@@ -108,6 +116,7 @@ export default function ExpenseForm({ members = [], groupId = null, onClose, ini
 
         <fieldset className="space-y-2">
           <legend className="text-sm font-medium text-slate-700">Participants</legend>
+          {members.length === 0 ? <EmptyState title="No participants" message="Add members before creating an expense." /> : (
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
             {members.map((member) => (
               <label key={member.id} className="flex min-h-10 cursor-pointer items-center gap-3 rounded-md border border-slate-200 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">
@@ -121,20 +130,22 @@ export default function ExpenseForm({ members = [], groupId = null, onClose, ini
               </label>
             ))}
           </div>
+          )}
           {errors.participantIds?.message && <p className="text-sm text-rose-700">{errors.participantIds.message}</p>}
         </fieldset>
 
         <SplitSelector
           totalAmount={amount}
           participants={participants}
-          value={splitResult}
+          initialSplitType={initialValues?.splitType}
+          initialSplits={initialValues?.splits}
           onChange={handleSplitChange}
         />
 
         <div className="flex justify-end gap-2 border-t border-slate-100 pt-4">
-          <Button type="button" variant="secondary" onClick={onClose} disabled={createExpense.isPending}>Cancel</Button>
-          <Button type="submit" loading={createExpense.isPending} disabled={!isValid || !splitResult.valid || participants.length === 0}>
-            Save expense
+          <Button type="button" variant="secondary" onClick={onClose} disabled={mutation.isPending}>Cancel</Button>
+          <Button type="submit" loading={mutation.isPending} disabled={!isValid || !splitResult.valid || participants.length === 0}>
+            {initialValues ? 'Save changes' : 'Save expense'}
           </Button>
         </div>
       </form>

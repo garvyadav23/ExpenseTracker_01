@@ -11,23 +11,12 @@ import Register from '../pages/Register.jsx'
 import AppLayout from '../components/layout/AppLayout.jsx'
 import ProtectedRoute from '../components/layout/ProtectedRoute.jsx'
 import Loader from '../components/common/Loader.jsx'
+import NotFoundPage from '../components/common/NotFoundPage.jsx'
 
 function PublicOnlyRoute() {
 	const { user, loading } = useAuth()
 	if (loading) return <Loader fullPage label="Restoring your session" />
 	return user ? <Navigate to="/" replace /> : <Outlet />
-}
-
-function NotFound() {
-	return (
-		<main className="grid min-h-screen place-items-center bg-slate-50 px-6 text-center">
-			<div>
-				<p className="text-sm font-semibold uppercase tracking-[0.18em] text-emerald-700">404</p>
-				<h1 className="mt-3 text-3xl font-semibold text-slate-900">Page not found</h1>
-				<p className="mt-2 text-slate-600">The page you requested does not exist.</p>
-			</div>
-		</main>
-	)
 }
 
 export default function AppRoutes() {
@@ -47,7 +36,7 @@ export default function AppRoutes() {
 					<Route path="/account" element={<Account />} />
 				</Route>
 			</Route>
-			<Route path="*" element={<NotFound />} />
+			<Route path="*" element={<NotFoundPage />} />
 		</Routes>
 	)
 }

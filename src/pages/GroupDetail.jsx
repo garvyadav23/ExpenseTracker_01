@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { ArrowLeft, Plus } from 'lucide-react'
-import { Link, useParams } from 'react-router-dom'
+import { Plus } from 'lucide-react'
+import { useParams } from 'react-router-dom'
 import ExpenseCard from '../components/expense/ExpenseCard.jsx'
 import ExpenseForm from '../components/expense/ExpenseForm.jsx'
 import SettleUpModal from '../components/balance/SettleUpModal.jsx'
@@ -9,6 +9,8 @@ import GroupTypeIcon from '../components/group/GroupTypeIcon.jsx'
 import Button from '../components/common/Button.jsx'
 import ConfirmDialog from '../components/common/ConfirmDialog.jsx'
 import EmptyState from '../components/common/EmptyState.jsx'
+import NotFoundPage from '../components/common/NotFoundPage.jsx'
+import Skeleton from '../components/common/Skeleton.jsx'
 import { useAuth } from '../hooks/useAuth.js'
 import { useGroupBalances } from '../hooks/useBalances.js'
 import { useDeleteExpense, useGroupExpenses } from '../hooks/useExpenses.js'
@@ -25,31 +27,23 @@ export default function GroupDetail() {
 	const deleteExpense = useDeleteExpense()
 	const { user } = useAuth()
 	const [expenseToDelete, setExpenseToDelete] = useState(null)
+	const [expenseToEdit, setExpenseToEdit] = useState(null)
 	const [expenseFormOpen, setExpenseFormOpen] = useState(false)
 	const [settlementDefaults, setSettlementDefaults] = useState(null)
 	const isLoading = groupQuery.isLoading || expensesQuery.isLoading || balancesQuery.isLoading || friendsQuery.isLoading
 	const isError = groupQuery.isError || expensesQuery.isError || balancesQuery.isError || friendsQuery.isError
 
 	if (groupQuery.isSuccess && !groupQuery.data) {
-		return (
-			<div className="mx-auto grid min-h-[50vh] max-w-4xl place-content-center text-center">
-				<p className="text-sm font-semibold uppercase tracking-wide text-emerald-800">404</p>
-				<h1 className="mt-2 text-2xl font-semibold text-slate-900">Group not found</h1>
-				<p className="mt-2 text-sm text-slate-600">This group may have been removed or the link is incorrect.</p>
-				<Link to="/groups" className="mx-auto mt-5 inline-flex items-center gap-2 text-sm font-semibold text-emerald-800 hover:text-emerald-950">
-					<ArrowLeft size={16} /> Back to groups
-				</Link>
-			</div>
-		)
+		return <NotFoundPage embedded />
 	}
 
 	if (isLoading) {
 		return (
-			<div className="mx-auto max-w-6xl animate-pulse space-y-7">
-				<div className="h-10 w-64 rounded bg-slate-200" />
+			<div className="mx-auto max-w-6xl space-y-7">
+				<Skeleton className="h-10 w-64" />
 				<div className="grid gap-6 lg:grid-cols-3">
-					<div className="space-y-3 lg:col-span-2">{[0, 1, 2].map((item) => <div key={item} className="h-28 rounded-md bg-slate-200" />)}</div>
-					<div className="space-y-4"><div className="h-52 rounded-md bg-slate-200" /><div className="h-44 rounded-md bg-slate-200" /></div>
+					<div className="space-y-3 lg:col-span-2">{[0, 1, 2].map((item) => <Skeleton key={item} className="h-28 rounded-md" />)}</div>
+					<div className="space-y-4"><Skeleton className="h-52 rounded-md" /><Skeleton className="h-44 rounded-md" /></div>
 				</div>
 			</div>
 		)
@@ -120,7 +114,7 @@ export default function GroupDetail() {
 					) : (
 						<div className="space-y-3">
 							{expenses.map((expense) => (
-								<ExpenseCard key={expense.id} expense={expense} usersById={usersById} onDelete={setExpenseToDelete} />
+								<ExpenseCard key={expense.id} expense={expense} usersById={usersById} onEdit={setExpenseToEdit} onDelete={setExpenseToDelete} />
 							))}
 						</div>
 					)}
@@ -130,7 +124,7 @@ export default function GroupDetail() {
 					<section className="rounded-md border border-slate-200 bg-white">
 						<h2 className="border-b border-slate-100 px-4 py-3 text-base font-semibold text-slate-900">Balances</h2>
 						{sortedMemberBalances.length === 0 ? (
-							<p className="px-4 py-5 text-sm text-slate-500">No balances to show.</p>
+							<EmptyState title="No balances" message="There are no balances to show for this group." />
 						) : (
 						<ul className="divide-y divide-slate-100">
 							{sortedMemberBalances.map(({ userId, netBalance }) => {
@@ -151,7 +145,7 @@ export default function GroupDetail() {
 												defaultReceiverId: netBalance > 0 ? userId : user?.id,
 												defaultAmount: Math.abs(netBalance),
 											})}
-											className={`w-full px-4 py-3 text-left text-sm font-medium hover:bg-slate-50 disabled:cursor-default disabled:hover:bg-white ${color}`}
+											className={`min-h-11 w-full px-4 py-3 text-left text-sm font-medium hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-emerald-700 disabled:cursor-default disabled:hover:bg-white ${color}`}
 											aria-label={`Settle ${balanceMessage}`}
 										>
 											{balanceMessage}
@@ -182,6 +176,9 @@ export default function GroupDetail() {
 			/>
 			{expenseFormOpen && (
 				<ExpenseForm members={members} groupId={group.id} onClose={() => setExpenseFormOpen(false)} />
+			)}
+			{expenseToEdit && (
+				<ExpenseForm members={members} groupId={group.id} initialValues={expenseToEdit} onClose={() => setExpenseToEdit(null)} />
 			)}
 			{settlementDefaults && (
 				<SettleUpModal members={members} groupId={group.id} {...settlementDefaults} onClose={() => setSettlementDefaults(null)} />

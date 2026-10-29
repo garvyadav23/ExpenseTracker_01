@@ -5,6 +5,8 @@ import Button from '../common/Button.jsx'
 import Input from '../common/Input.jsx'
 import Modal from '../common/Modal.jsx'
 import Select from '../common/Select.jsx'
+import Skeleton from '../common/Skeleton.jsx'
+import EmptyState from '../common/EmptyState.jsx'
 import { useFriends } from '../../hooks/useFriends.js'
 import { useCreateGroup } from '../../hooks/useGroups.js'
 
@@ -64,10 +66,13 @@ export default function CreateGroupModal({ open, onClose }) {
           <legend className="text-sm font-medium text-slate-700">Choose members</legend>
           {friendsQuery.isLoading ? (
             <div className="space-y-2" aria-label="Loading friends">
-              {[0, 1, 2].map((item) => <div key={item} className="h-10 animate-pulse rounded-md bg-slate-100" />)}
+              {[0, 1, 2].map((item) => <Skeleton key={item} className="h-10 bg-slate-100" />)}
             </div>
           ) : friendsQuery.isError ? (
-            <p role="alert" className="text-sm text-rose-700">{friendsQuery.error.message}</p>
+            <div>
+              <p role="alert" className="text-sm text-rose-700">{friendsQuery.error.message}</p>
+              <Button className="mt-3" variant="secondary" size="sm" onClick={() => friendsQuery.refetch()}>Retry</Button>
+            </div>
           ) : friendsQuery.data?.length ? (
             <div className="max-h-52 divide-y divide-slate-100 overflow-y-auto rounded-md border border-slate-200">
               {friendsQuery.data.map((friend) => (
@@ -83,7 +88,7 @@ export default function CreateGroupModal({ open, onClose }) {
               ))}
             </div>
           ) : (
-            <p className="rounded-md bg-slate-50 px-3 py-3 text-sm text-slate-600">Add a friend before creating a group.</p>
+            <EmptyState title="No friends yet" message="Add a friend before creating a group." />
           )}
           {errors.memberIds?.message && <p className="text-sm text-rose-700">{errors.memberIds.message}</p>}
         </fieldset>

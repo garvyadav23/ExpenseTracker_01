@@ -2,19 +2,21 @@ import { Link } from 'react-router-dom'
 import Avatar from '../common/Avatar.jsx'
 import { useGroupBalances } from '../../hooks/useBalances.js'
 import { formatCurrency } from '../../utils/formatCurrency.js'
+import Button from '../common/Button.jsx'
+import Skeleton from '../common/Skeleton.jsx'
 import GroupTypeIcon from './GroupTypeIcon.jsx'
 
 export function GroupCardSkeleton() {
   return (
-    <div aria-hidden="true" className="min-h-48 animate-pulse rounded-md border border-slate-200 bg-white p-5">
+    <div aria-hidden="true" className="min-h-48 rounded-md border border-slate-200 bg-white p-5">
       <div className="flex items-center gap-3">
-        <span className="size-10 rounded-md bg-slate-200" />
-        <span className="h-5 w-36 rounded bg-slate-200" />
+        <Skeleton className="size-10 rounded-md" />
+        <Skeleton className="h-5 w-36" />
       </div>
       <div className="mt-6 flex items-center">
-        {[0, 1, 2].map((item) => <span key={item} className="-ml-2 size-8 rounded-full border-2 border-white bg-slate-100 first:ml-0" />)}
+        {[0, 1, 2].map((item) => <Skeleton key={item} className="-ml-2 size-8 rounded-full border-2 border-white bg-slate-100 first:ml-0" />)}
       </div>
-      <div className="mt-5 h-4 w-40 rounded bg-slate-100" />
+      <Skeleton className="mt-5 h-4 w-40 bg-slate-100" />
     </div>
   )
 }
@@ -41,11 +43,8 @@ export default function GroupCard({ group, members = [] }) {
   const visibleMembers = members.slice(0, 4)
 
   return (
-    <Link
-      to={`/groups/${group.id}`}
-      aria-label={`Open ${group.name}`}
-      className="block min-h-48 rounded-md border border-slate-200 bg-white p-5 transition hover:border-emerald-300 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700"
-    >
+    <article className="min-h-48 rounded-md border border-slate-200 bg-white p-5 transition hover:border-emerald-300 hover:shadow-sm">
+      <Link to={`/groups/${group.id}`} aria-label={`Open ${group.name}`} className="block rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700">
       <div className="flex items-start gap-3">
         <span className="grid size-10 shrink-0 place-items-center rounded-md bg-emerald-50 text-emerald-800">
           <GroupTypeIcon type={group.type} size={20} />
@@ -71,14 +70,20 @@ export default function GroupCard({ group, members = [] }) {
           </span>
         )}
       </div>
+      </Link>
 
       {balanceQuery.isLoading ? (
-        <span aria-label="Loading group balance" className="mt-4 block h-4 w-32 animate-pulse rounded bg-slate-200" />
+        <Skeleton className="mt-4 h-4 w-32" />
+      ) : balanceQuery.isError ? (
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+          <p role="alert" className="text-sm text-rose-700">{balanceQuery.error?.message || 'Balance unavailable.'}</p>
+          <Button size="sm" variant="secondary" onClick={() => balanceQuery.refetch()}>Retry</Button>
+        </div>
       ) : (
         <p className={`mt-4 text-sm font-medium ${balanceClass}`} aria-live="polite">
           {balanceMessage}
         </p>
       )}
-    </Link>
+    </article>
   )
 }

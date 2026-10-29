@@ -103,6 +103,65 @@ export async function createExpense(input) {
 	return clone(expense)
 }
 
+export async function updateExpense(id, input) {
+	await delay()
+	const expense = mockState.expenses.find((item) => item.id === id)
+	if (!expense) throw new Error('Expense not found.')
+	if (!input || typeof input.description !== 'string' || !input.description.trim()) {
+		throw new Error('An expense description is required.')
+	}
+
+	const groupId = input.groupId === undefined ? expense.groupId : input.groupId ?? null
+	const group = groupId ? mockState.groups.find((item) => item.id === groupId) : null
+	if (groupId && !group) throw new Error('Group not found.')
+
+	const paidBy = input.paidBy ?? expense.paidBy
+	if (typeof paidBy !== 'string' || !mockState.users.some((user) => user.id === paidBy)) {
+		throw new Error('Payer must be an existing user with a string ID.')
+	}
+
+	const totalPaise = amountToPaise(input.amount)
+	if (!Array.isArray(input.splits) || input.splits.length === 0) {
+		throw new Error('At least one expense split is required.')
+	}
+	const seenUserIds = new Set()
+	const normalizedSplits = input.splits.map((split) => {
+		if (!split || typeof split.userId !== 'string' || seenUserIds.has(split.userId)) {
+			throw new Error('Split user IDs must be unique strings.')
+		}
+		if (!mockState.users.some((user) => user.id === split.userId)) {
+			throw new Error(`Unknown split user: ${split.userId}`)
+		}
+		if (group && !group.memberIds.includes(split.userId)) {
+			throw new Error('Expense splits must belong to group members.')
+		}
+		seenUserIds.add(split.userId)
+		return { userId: split.userId, paise: amountToPaise(split.owedAmount, { allowZero: true }) }
+	})
+	if (normalizedSplits.reduce((sum, split) => sum + split.paise, 0) !== totalPaise) {
+		throw new Error('Expense splits must add up exactly to the expense amount.')
+	}
+
+	Object.assign(expense, {
+		groupId,
+		description: input.description.trim(),
+		amount: fromPaise(totalPaise),
+		date: input.date ?? null,
+		paidBy,
+		splitType: input.splitType ?? expense.splitType ?? 'equal',
+		splits: normalizedSplits.map(({ userId, paise }) => ({ userId, owedAmount: fromPaise(paise) })),
+	})
+	const actorName = mockState.users.find(({ id: userId }) => userId === CURRENT_USER_ID)?.name ?? 'Garv'
+	addActivity({
+		type: 'expense.updated',
+		actorId: CURRENT_USER_ID,
+		groupId,
+		expenseId: expense.id,
+		message: `${actorName} updated '${expense.description}'`,
+	})
+	return clone(expense)
+}
+
 export async function deleteExpense(id) {
 	await delay()
 	const expenseIndex = mockState.expenses.findIndex((expense) => expense.id === id)

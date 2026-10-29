@@ -8,13 +8,14 @@ import Button from '../components/common/Button.jsx'
 import EmptyState from '../components/common/EmptyState.jsx'
 import Input from '../components/common/Input.jsx'
 import Modal from '../components/common/Modal.jsx'
+import Skeleton from '../components/common/Skeleton.jsx'
 import SettleUpModal from '../components/balance/SettleUpModal.jsx'
 import { useAddFriend, useFriends } from '../hooks/useFriends.js'
 import { useBalances } from '../hooks/useBalances.js'
 import { useAuth } from '../hooks/useAuth.js'
 import { formatCurrency } from '../utils/formatCurrency.js'
 
-const addFriendSchema = z.object({ email: z.email('Enter a valid email address.') })
+const addFriendSchema = z.object({ email: z.string().trim().pipe(z.email('Enter a valid email address.')) })
 
 function AddFriendModal({ onClose }) {
 	const addFriend = useAddFriend()
@@ -47,13 +48,13 @@ function AddFriendModal({ onClose }) {
 
 function FriendSkeleton() {
 	return (
-		<li aria-hidden="true" className="flex animate-pulse items-center gap-3 px-4 py-4">
-			<span className="size-10 rounded-full bg-slate-200" />
+		<li aria-hidden="true" className="flex items-center gap-3 px-4 py-4">
+			<Skeleton className="size-10 rounded-full" />
 			<span className="flex-1 space-y-2">
-				<span className="block h-4 w-32 rounded bg-slate-200" />
-				<span className="block h-3 w-44 max-w-full rounded bg-slate-100" />
+				<Skeleton className="block h-4 w-32" />
+				<Skeleton className="block h-3 w-44 max-w-full bg-slate-100" />
 			</span>
-			<span className="h-9 w-20 rounded bg-slate-100" />
+			<Skeleton className="h-10 w-20 bg-slate-100" />
 		</li>
 	)
 }

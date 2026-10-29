@@ -1,16 +1,17 @@
 import Avatar from '../common/Avatar.jsx'
 import Button from '../common/Button.jsx'
+import Skeleton from '../common/Skeleton.jsx'
 import { formatCurrency } from '../../utils/formatCurrency.js'
 
 function FriendBalanceSkeleton() {
   return (
-    <div aria-hidden="true" className="flex animate-pulse items-center gap-3 px-4 py-4">
-      <span className="size-10 rounded-full bg-slate-200" />
+    <div aria-hidden="true" className="flex items-center gap-3 px-4 py-4">
+      <Skeleton className="size-10 rounded-full" />
       <span className="flex-1">
-        <span className="block h-4 w-28 rounded bg-slate-200" />
-        <span className="mt-2 block h-3 w-40 max-w-full rounded bg-slate-100" />
+        <Skeleton className="block h-4 w-28" />
+        <Skeleton className="mt-2 block h-3 w-40 max-w-full bg-slate-100" />
       </span>
-      <span className="h-9 w-20 rounded bg-slate-100" />
+      <Skeleton className="h-10 w-20 bg-slate-100" />
     </div>
   )
 }

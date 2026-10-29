@@ -13,10 +13,10 @@ export default function ConfirmDialog({
   loading = false,
 }) {
   return (
-    <Modal open={open} onClose={onClose} title={title}>
+    <Modal open={open} onClose={loading ? () => {} : onClose} title={title}>
       <p className="text-sm leading-6 text-slate-600">{message}</p>
       <div className="mt-6 flex justify-end gap-2">
-        <Button variant="secondary" onClick={onClose}>{cancelText}</Button>
+        <Button variant="secondary" onClick={onClose} disabled={loading}>{cancelText}</Button>
         <Button variant={danger ? 'danger' : 'primary'} loading={loading} onClick={onConfirm}>
           {confirmText}
         </Button>

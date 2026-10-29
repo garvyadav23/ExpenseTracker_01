@@ -1,5 +1,6 @@
 import { ArrowDownLeft, ArrowLeftRight, ArrowUpRight } from 'lucide-react'
 import { formatCurrency } from '../../utils/formatCurrency.js'
+import Skeleton from '../common/Skeleton.jsx'
 
 const cards = [
   { key: 'total', label: 'Total balance', icon: ArrowLeftRight },
@@ -24,9 +25,9 @@ export default function BalanceSummary({ overall, loading = false }) {
         return (
           <article key={key} className="min-h-32 rounded-md border border-slate-200 bg-white p-5">
             {loading ? (
-              <div aria-hidden="true" className="animate-pulse">
-                <div className="h-4 w-28 rounded bg-slate-200" />
-                <div className="mt-5 h-7 w-36 rounded bg-slate-200" />
+              <div className="space-y-5">
+                <Skeleton className="h-4 w-28" />
+                <Skeleton className="h-7 w-36" />
               </div>
             ) : (
               <>

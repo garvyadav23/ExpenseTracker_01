@@ -39,7 +39,7 @@ export default function Modal({ open, onClose, title, children, className = '' }
             type="button"
             aria-label="Close dialog"
             onClick={onClose}
-            className="grid size-9 place-items-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+            className="grid size-10 place-items-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700"
           >
             <X size={19} />
           </button>

@@ -20,7 +20,7 @@ function SidebarLinks({ onNavigate }) {
           to={to}
           end={end}
           onClick={onNavigate}
-          className={({ isActive }) => `flex min-h-11 items-center gap-3 rounded-md px-3 text-sm font-medium transition-colors ${
+          className={({ isActive }) => `flex min-h-11 items-center gap-3 rounded-md px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 ${
             isActive
               ? 'bg-emerald-50 text-emerald-900'
               : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
@@ -57,13 +57,13 @@ export default function AppLayout() {
           >
             <Menu size={21} />
           </button>
-          <NavLink to="/" className="text-base font-bold tracking-tight text-slate-900">
+          <NavLink to="/" className="rounded-sm text-base font-bold tracking-tight text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700">
             Expense<span className="text-emerald-700">Tracker</span>
           </NavLink>
         </div>
         <div className="flex items-center gap-2 sm:gap-3">
           <span className="hidden text-sm font-medium text-slate-700 sm:block">{user?.name}</span>
-          <NavLink to="/account" aria-label="Account settings">
+          <NavLink to="/account" aria-label="Account settings" className="grid size-10 place-items-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700">
             <Avatar name={user?.name} />
           </NavLink>
           <button
@@ -71,7 +71,7 @@ export default function AppLayout() {
             title="Log out"
             aria-label="Log out"
             onClick={handleLogout}
-            className="grid size-9 place-items-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+            className="grid size-10 place-items-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700"
           >
             <LogOut size={18} />
           </button>
@@ -95,7 +95,7 @@ export default function AppLayout() {
             <span className="text-base font-bold">Navigation</span>
             <button
               type="button"
-              className="grid size-9 place-items-center rounded-md text-slate-600 hover:bg-slate-100"
+              className="grid size-10 place-items-center rounded-md text-slate-600 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700"
               aria-label="Close navigation"
               onClick={() => setDrawerOpen(false)}
             >

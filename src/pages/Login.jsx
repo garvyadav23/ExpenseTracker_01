@@ -3,11 +3,10 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
-import { users } from '../mocks/users.js'
 import { useAuth } from '../hooks/useAuth.js'
 
 const loginSchema = z.object({
-	email: z.email('Enter a valid email address.'),
+	email: z.string().trim().pipe(z.email('Enter a valid email address.')),
 	password: z.string().min(1, 'Enter your password.'),
 })
 
@@ -79,15 +78,6 @@ export default function Login() {
 						{isSubmitting ? 'Signing in...' : 'Sign in'}
 					</button>
 				</form>
-
-				<div className="mt-6 rounded-md bg-slate-50 p-3.5">
-					<p className="text-xs font-semibold uppercase tracking-wide text-slate-600">Mock accounts</p>
-					<ul className="mt-2 grid gap-1 text-sm text-slate-700 sm:grid-cols-2">
-						{users.map((user) => <li key={user.id}>{user.email}</li>)}
-					</ul>
-					<p className="mt-2 text-xs text-slate-500">Any password works.</p>
-				</div>
-
 				<p className="mt-6 text-center text-sm text-slate-600">
 					New here? <Link to="/register" className="font-semibold text-emerald-800 hover:text-emerald-950">Create an account</Link>
 				</p>

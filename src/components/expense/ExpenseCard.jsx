@@ -1,9 +1,9 @@
 import { format } from 'date-fns'
-import { Trash2 } from 'lucide-react'
+import { Pencil, Trash2 } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth.js'
 import { formatCurrency } from '../../utils/formatCurrency.js'
 
-export default function ExpenseCard({ expense, usersById = {}, onDelete }) {
+export default function ExpenseCard({ expense, usersById = {}, onDelete, onEdit }) {
   const { user } = useAuth()
   const payer = usersById[expense.paidBy]?.name ?? 'Unknown user'
   const ownSplit = expense.splits.find((split) => split.userId === user?.id)
@@ -33,15 +33,26 @@ export default function ExpenseCard({ expense, usersById = {}, onDelete }) {
         </p>
         <p className={`mt-1 text-sm font-medium ${shareClass}`}>{shareMessage}</p>
       </div>
-      <button
-        type="button"
-        aria-label={`Delete ${expense.description}`}
-        title="Delete expense"
-        onClick={() => onDelete?.(expense)}
-        className="grid size-9 shrink-0 place-items-center rounded-md text-slate-500 hover:bg-rose-50 hover:text-rose-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-600"
-      >
-        <Trash2 size={17} />
-      </button>
+      <div className="flex shrink-0 gap-1">
+        <button
+          type="button"
+          aria-label={`Edit ${expense.description}`}
+          title="Edit expense"
+          onClick={() => onEdit?.(expense)}
+          className="grid size-10 place-items-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700"
+        >
+          <Pencil aria-hidden="true" size={17} />
+        </button>
+        <button
+          type="button"
+          aria-label={`Delete ${expense.description}`}
+          title="Delete expense"
+          onClick={() => onDelete?.(expense)}
+          className="grid size-10 place-items-center rounded-md text-slate-500 hover:bg-rose-50 hover:text-rose-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-600"
+        >
+          <Trash2 aria-hidden="true" size={17} />
+        </button>
+      </div>
     </article>
   )
 }

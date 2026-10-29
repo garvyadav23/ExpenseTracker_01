@@ -13,6 +13,8 @@ export default function Groups() {
 	const groupsQuery = useGroups()
 	const friendsQuery = useFriends()
 	const { user } = useAuth()
+	const isLoading = groupsQuery.isLoading || friendsQuery.isLoading
+	const isError = groupsQuery.isError || friendsQuery.isError
 	const friendsById = Object.fromEntries((friendsQuery.data ?? []).map((friend) => [friend.id, friend]))
 	if (user) friendsById[user.id] = user
 
@@ -29,16 +31,16 @@ export default function Groups() {
 				</Button>
 			</header>
 
-			{groupsQuery.isLoading ? (
+			{isLoading ? (
 				<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
 					{[0, 1, 2].map((item) => <GroupCardSkeleton key={item} />)}
 				</div>
-			) : groupsQuery.isError ? (
+			) : isError ? (
 				<div className="rounded-md border border-rose-200 bg-rose-50 p-5">
-					<p role="alert" className="text-sm text-rose-800">{groupsQuery.error?.message || 'Unable to load groups.'}</p>
-					<Button className="mt-4" variant="secondary" onClick={() => groupsQuery.refetch()}>Retry</Button>
+					<p role="alert" className="text-sm text-rose-800">{groupsQuery.error?.message || friendsQuery.error?.message || 'Unable to load groups.'}</p>
+					<Button className="mt-4" variant="secondary" onClick={() => Promise.all([groupsQuery.refetch(), friendsQuery.refetch()])}>Retry</Button>
 				</div>
-			) : groupsQuery.data.length === 0 ? (
+			) : groupsQuery.data?.length === 0 ? (
 				<div className="rounded-md border border-slate-200 bg-white">
 					<EmptyState
 						title="No groups yet"
@@ -54,10 +56,6 @@ export default function Groups() {
 						return <GroupCard key={group.id} group={group} members={members} />
 					})}
 				</div>
-			)}
-
-			{!friendsQuery.isLoading && friendsQuery.isError && (
-				<p role="status" className="mt-4 text-sm text-slate-500">Member avatars are unavailable right now.</p>
 			)}
 
 			<CreateGroupModal open={createOpen} onClose={() => setCreateOpen(false)} />

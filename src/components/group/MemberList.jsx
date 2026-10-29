@@ -1,6 +1,11 @@
 import Avatar from '../common/Avatar.jsx'
+import EmptyState from '../common/EmptyState.jsx'
 
 export default function MemberList({ members = [], currentUserId }) {
+  if (members.length === 0) {
+    return <EmptyState title="No members" message="There are no members in this group yet." />
+  }
+
   return (
     <ul className="divide-y divide-slate-100">
       {members.map((member) => {
